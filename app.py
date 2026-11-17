@@ -82,6 +82,11 @@ def logout():
 def home():
     return render_template("home.html", username=current_user.username)
 
+@app.route("/settings")
+@login_required
+def settings():
+    return render_template("settings.html")
+
 @app.route("/")
 def index():
     return render_template("index.html")
