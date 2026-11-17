@@ -80,7 +80,7 @@ def logout():
 @app.route("/home")
 @login_required
 def home():
-    return render_template("home.html")
+    return render_template("home.html", username=current_user.username)
 
 @app.route("/")
 def index():
