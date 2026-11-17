@@ -1,0 +1,33 @@
+* {box-sizing: border-box}
+
+body{
+    background-color: lightgreen;
+    margin: 0;
+}
+
+.header{
+    background-color: teal;
+    display: flex;
+    padding: 10px;
+    justify-content: space-between;
+}
+
+.header a{
+    float: left;
+    color: black;
+    padding: 12px;
+    line-height: 25px;
+    border-radius: 4px;
+    font-size: 18px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.header a:hover{
+    background-color: darkslategray;
+}
+
+.header a.logo{
+    font-size: 25px;
+    font-weight: bold;
+}
