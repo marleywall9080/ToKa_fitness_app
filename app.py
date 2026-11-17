@@ -119,7 +119,7 @@ def create_advice():
 def training():
     conn = sqlite3.connect("advice.db")
     cursor = conn.cursor()
-    cursor.execute(f"SELECT * FROM training WHERE user=?",
+    cursor.execute("SELECT * FROM training WHERE user=?",
                    (current_user.username,))
     records = cursor.fetchall()
     return render_template("training.html", records=records)
@@ -143,6 +143,16 @@ def training_plan():
 @app.route("/personal_trainer")
 def personal_trainer():
     return "pretend this is ToKa Fitness' site for booking personal trainers"
+
+@app.route("/videos")
+@login_required
+def videos():
+    conn = sqlite3.connect("advice.db")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM videos")
+    records = cursor.fetchall()
+    return render_template("videos.html", records=records)
 
 @app.route("/settings")
 @login_required

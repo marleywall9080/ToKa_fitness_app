@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Videos</h1>
+<table border="1">
+    <tr>
+        <th>Video</th>
+        <th>Type</th>
+    </tr>
+    {% for record in records %}
+    <tr>
+        <td>
+            <a href="{{ record[1] }}">{{ record[1] }}</a>
+        </td>
+        <td>{{ record[2] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<p>the joe wicks video is here purely for place holder reasons</p>
+<p>Videos will be souly implemented by ToKa and so there is no addition page like with the others</p>
+{% endblock %}
