@@ -2,5 +2,13 @@
 
 {% block content %}
 <h1>Welcome {{ username }}</h1>
-
+{% for record in records %}
+<p>
+    Random advice:
+    {{ record[1] }} <br>
+    {{ record[2 ]}} advice by {{ record[3] }} <br>
+    see more advice here <br>
+    <button onclick="window.location.href='/advice'">see more advice</button>
+</p>
+{% endfor %}
 {% endblock %}

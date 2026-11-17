@@ -85,8 +85,8 @@ def home():
     cursor = conn.cursor()
     conn.row_factory = sqlite3.Row
     cursor.execute("SELECT  * FROM advice ORDER BY RANDOM() LIMIT 1") # code from geek for geeks
-    record = cursor.fetchall()
-    return render_template("home.html", username=current_user.username)
+    records = cursor.fetchall()
+    return render_template("home.html", username=current_user.username, records = records)
 
 @app.route("/advice")
 @login_required
