@@ -6,6 +6,14 @@ body{
     text-align: center;
 }
 
+table{
+    margin: 0 auto;
+}
+
+tr:nth-child(odd){
+    background-color: rgb(99, 160, 99);
+}
+
 .header{
     background-color: teal;
     display: flex;

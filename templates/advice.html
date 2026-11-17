@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Advice</h1>
+<table border="1">
+    <tr>
+        <th>Advice</th>
+        <th>Type</th>
+        <th>User</th>
+    </tr>
+    {% for record in records %}
+    <tr>
+        <td>{{ record[1] }}</td>
+        <td>{{ record[2] }}</td>
+        <td>{{ record[3] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<p>Want to post advice?</p>
+<a href="/create_advice">Click here</a>
+{% endblock %}

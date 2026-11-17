@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+import sqlite3
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite"
@@ -81,6 +82,32 @@ def logout():
 @login_required
 def home():
     return render_template("home.html", username=current_user.username)
+
+@app.route("/advice")
+@login_required
+def advice():
+    conn = sqlite3.connect("advice.db")
+    cursor = conn.cursor()
+    conn.row_factory = sqlite3.Row
+    cursor.execute("SELECT * FROM advice")
+    records = cursor.fetchall()
+    conn.close()
+    return render_template("advice.html", records=records)
+
+@app.route("/create_advice", methods=["GET", "POST"])
+@login_required
+def create_advice():
+    if request.method == "POST":
+        conn = sqlite3.connect("advice.db")
+        cursor = conn.cursor()
+        advice = request.form.get("advice")
+        advice_type = request.form.get("type")
+
+        cursor.execute("INSERT INTO advice (advice, advice_type, user) VALUES (?, ?, ?)", (advice, advice_type, current_user.username))
+        conn.commit()
+        conn.close()
+        return redirect(url_for("advice"))
+    return render_template("create_advice.html")
 
 @app.route("/settings")
 @login_required
