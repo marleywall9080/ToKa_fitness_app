@@ -1,16 +1,17 @@
 # code for login system is from geek for geeks, https://www.geeksforgeeks.org/python/how-to-add-authentication-to-your-app-with-flask-login/
+# imports required for the code
 from flask import Flask, render_template, request, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 
-app = Flask(__name__)
+#Start of code from geek for geeks, comments may be scarce and not fully correct
+
+app = Flask(__name__) # intialising flask and setting up the requirements for sqlalchemy and login
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = "supersecretkey"
-
-#Start of code from geek for geeks
 
 db = SQLAlchemy(app)
 login_manager = LoginManager()
@@ -35,35 +36,35 @@ def load_user(user_id):
 # Register route
 @app.route('/register', methods=["GET", "POST"])
 def register():
-    if request.method == "POST":
+    if request.method == "POST": # gets the user's username and password
         username = request.form.get("username")
         password = request.form.get("password")
 
-        if Users.query.filter_by(username=username).first():
+        if Users.query.filter_by(username=username).first(): # checks if it is already taken
             return render_template("sign_up.html", error="Username already taken!")
 
-        hashed_password = generate_password_hash(password, method="pbkdf2:sha256")
+        hashed_password = generate_password_hash(password, method="pbkdf2:sha256") # encrypts the password
 
         new_user = Users(username=username, password=hashed_password)
-        db.session.add(new_user)
+        db.session.add(new_user) # writes down the new username and encrypted password to a database
         db.session.commit()
 
-        return redirect(url_for("login"))
+        return redirect(url_for("login")) # takes the user to the login page
     
     return render_template("sign_up.html")
 
 # Login route
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == "POST":
+    if request.method == "POST": # gets the users username and password
         username = request.form.get("username")
         password = request.form.get("password")
 
-        user = Users.query.filter_by(username=username).first()
+        user = Users.query.filter_by(username=username).first() # checks if the username exists in the database
 
-        if user and check_password_hash(user.password, password):
+        if user and check_password_hash(user.password, password): # checks if the password matches to the username
             login_user(user)
-            return redirect(url_for("home"))
+            return redirect(url_for("home")) # takes the user to the homepage
         else:
             return render_template("login.html", error="Invalid username or password")
 
@@ -71,59 +72,64 @@ def login():
 
 # Logout route
 @app.route("/logout")
-@login_required
+@login_required # means a user is required to be logged in to use this
 def logout():
-    logout_user()
+    logout_user() # logs out the user
     return redirect(url_for("login"))
 
 # end of code from geek for geeks
 
+# home page
 @app.route("/home")
 @login_required
 def home():
-    conn = sqlite3.connect("advice.db")
+    conn = sqlite3.connect("advice.db") # connects to the database
     cursor = conn.cursor()
     conn.row_factory = sqlite3.Row
-    cursor.execute("SELECT  * FROM advice ORDER BY RANDOM() LIMIT 1") # code from geek for geeks
-    records = cursor.fetchall()
-    return render_template("home.html", username=current_user.username, records = records)
+    cursor.execute("SELECT  * FROM advice ORDER BY RANDOM() LIMIT 1") # code from geek for geeks, randomly scrambles the order of data in the database and then takes the first one
+    records = cursor.fetchall() # sets up a variable with all the selected data in it
+    return render_template("home.html", username=current_user.username, records = records) # renders the html page and sends the selected data
 
+# advice page
 @app.route("/advice")
 @login_required
 def advice():
     conn = sqlite3.connect("advice.db")
     cursor = conn.cursor()
     conn.row_factory = sqlite3.Row
-    cursor.execute("SELECT * FROM advice")
-    records = cursor.fetchall()
-    conn.close()
-    return render_template("advice.html", records=records)
+    cursor.execute("SELECT * FROM advice") # selects all the data in advice
+    records = cursor.fetchall() 
+    conn.close() # closes the database
+    return render_template("advice.html", records=records) # renders the html page and sends all the data to be shown
 
+# posting advice page
 @app.route("/create_advice", methods=["GET", "POST"])
 @login_required
 def create_advice():
     if request.method == "POST":
         conn = sqlite3.connect("advice.db")
         cursor = conn.cursor()
-        advice = request.form.get("advice")
+        advice = request.form.get("advice") # gets the advice from a form on the html page
         advice_type = request.form.get("type")
 
-        cursor.execute("INSERT INTO advice (advice, advice_type, user) VALUES (?, ?, ?)", (advice, advice_type, current_user.username))
+        cursor.execute("INSERT INTO advice (advice, advice_type, user) VALUES (?, ?, ?)", (advice, advice_type, current_user.username)) # puts the data into the database
         conn.commit()
         conn.close()
-        return redirect(url_for("advice"))
-    return render_template("create_advice.html")
+        return redirect(url_for("advice")) # takes user to the advice page
+    return render_template("create_advice.html") # renders the html page
 
+# training page
 @app.route("/training")
 @login_required
 def training():
     conn = sqlite3.connect("advice.db")
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM training WHERE user=?",
-                   (current_user.username,))
+                   (current_user.username,)) # only takes the data from the database where the recorded username is the same as the one currently logged in so people don't see other peoples workout plans
     records = cursor.fetchall()
     return render_template("training.html", records=records)
 
+# creating a training plan page
 @app.route("/training_plan", methods=["GET", "POST"])
 @login_required
 def training_plan():
@@ -135,33 +141,36 @@ def training_plan():
         sets = request.form.get("sets")
         reps = request.form.get("reps")
 
-        cursor.execute("INSERT INTO training (exercise, workout_type, sets, reps, user) VALUES (?, ?, ?, ?, ?)", (exercise, workout_type, sets, reps, current_user.username))
+        cursor.execute("INSERT INTO training (exercise, workout_type, sets, reps, user) VALUES (?, ?, ?, ?, ?)", (exercise, workout_type, sets, reps, current_user.username)) # records the username of the person currently logged in so that it can filter out other peoples workout plans later
         conn.commit()
         return redirect(url_for("training"))
     return render_template("training_plan.html")
 
 @app.route("/personal_trainer")
 def personal_trainer():
-    return "pretend this is ToKa Fitness' site for booking personal trainers"
+    return "pretend this is ToKa Fitness' site for booking personal trainers" # i have not created a page for this as this is one of ToKa fitness' other services, and so it is only needed to draw attention to them
 
+# videos page
 @app.route("/videos")
 @login_required
 def videos():
     conn = sqlite3.connect("advice.db")
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM videos")
+    cursor.execute("SELECT * FROM videos") # selects all data from the videos table
     records = cursor.fetchall()
     return render_template("videos.html", records=records)
 
+# settings page
 @app.route("/settings")
 @login_required
-def settings():
+def settings(): # very barebones at the time of writing this comment, will add more later
     return render_template("settings.html")
 
+# start
 @app.route("/")
-def index():
+def index(): # simple start page for people who aren't signed in
     return render_template("index.html")
 
-if __name__ == "__main__":
+if __name__ == "__main__": # runs the app
     app.run(debug=True)

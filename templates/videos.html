@@ -10,7 +10,7 @@
     {% for record in records %}
     <tr>
         <td>
-            <a href="{{ record[1] }}">{{ record[1] }}</a>
+            <a href="{{ record[1] }}">{{ record[1] }}</a> <!-- originally wanted videos to be imbedded with this code, <iframe src="{{ record[1] }}", width="300", height="200", allowfullscreen></iframe>, which i do believe was working but then the video wasn't showing for reasons out of my control, might want to try with a different video provider than youtube-->
         </td>
         <td>{{ record[2] }}</td>
     </tr>

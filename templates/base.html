@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <link rel="stylesheet" href="static/style.css">
+        <link rel="stylesheet" href="static/style.css"> <!-- link to the css style sheet-->
         <meta charset="UTF-8">
         <title>ToKa Fitness</title>
     </head>
 
-    <div class="header">
+    <div class="header"> <!-- simple header to allow users to navigate the website-->
         <a href="/home">ToKa Fitness</a>
         <div class="header-right">
             <a href="/home">Home</a>
@@ -18,6 +18,6 @@
     </div>
 
     <main>
-        {% block content %}{% endblock %}
+        {% block content %}{% endblock %} <!-- this allows different pages to easily copy over the header without needing to copy and paste the header onto a new page or making multiple changes for one header change-->
     </main>
 </html>
