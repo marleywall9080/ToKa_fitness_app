@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Training</h1>
+    <table border="1">
+        <tr>
+            <th>Exercise</th>
+            <th>Type</th>
+            <th>Sets</th>
+            <th>Reps</th>
+        </tr>
+        {% for record in records %}
+        <tr>
+            <td>{{ record[1] }}</td>
+            <td>{{ record[2] }}</td>
+            <td>{{ record[3] }}</td>
+            <td>{{ record[4] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <p>
+        Not created any workout plans yet? <br>
+        <a href="/training_plan">Plan here</a>
+        <br>
+        Want to work with a personal trainer? <br>
+        <a href="/personal_trainer">Book a session now</a>
+    </p>
+{% endblock %}

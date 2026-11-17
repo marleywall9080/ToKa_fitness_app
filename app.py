@@ -114,6 +114,36 @@ def create_advice():
         return redirect(url_for("advice"))
     return render_template("create_advice.html")
 
+@app.route("/training")
+@login_required
+def training():
+    conn = sqlite3.connect("advice.db")
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT * FROM training WHERE user=?",
+                   (current_user.username,))
+    records = cursor.fetchall()
+    return render_template("training.html", records=records)
+
+@app.route("/training_plan", methods=["GET", "POST"])
+@login_required
+def training_plan():
+    if request.method == "POST":
+        conn = sqlite3.connect("advice.db")
+        cursor = conn.cursor()
+        exercise = request.form.get("exercise")
+        workout_type = request.form.get("type")
+        sets = request.form.get("sets")
+        reps = request.form.get("reps")
+
+        cursor.execute("INSERT INTO training (exercise, workout_type, sets, reps, user) VALUES (?, ?, ?, ?, ?)", (exercise, workout_type, sets, reps, current_user.username))
+        conn.commit()
+        return redirect(url_for("training"))
+    return render_template("training_plan.html")
+
+@app.route("/personal_trainer")
+def personal_trainer():
+    return "pretend this is ToKa Fitness' site for booking personal trainers"
+
 @app.route("/settings")
 @login_required
 def settings():

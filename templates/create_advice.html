@@ -3,15 +3,15 @@
 {% block content %}
 <h1>Post Advice</h1>
 <form action="/create_advice" method="post">
-    <label for="advice">Advice</label>
-    <input type="text" name="advice">
-    <label for="type">What kind of Advice is this</label>
+    <label for="advice">Advice:</label>
+    <input type="text" name="advice"> <br>
+    <label for="type">What kind of Advice is this:</label>
     <select id="type" name="type">
         <option value="diet">Diet</option>
         <option value="weightloss">Weightloss</option>
         <option value="cardio">Cardio</option>
         <option value="strength">Strength</option>
-    </select>
+    </select> <br>
     <button type="submit">Post</button>
 </form>
 {% endblock %}
