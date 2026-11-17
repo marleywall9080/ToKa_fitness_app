@@ -81,6 +81,11 @@ def logout():
 @app.route("/home")
 @login_required
 def home():
+    conn = sqlite3.connect("advice.db")
+    cursor = conn.cursor()
+    conn.row_factory = sqlite3.Row
+    cursor.execute("SELECT  * FROM advice ORDER BY RANDOM() LIMIT 1") # code from geek for geeks
+    record = cursor.fetchall()
     return render_template("home.html", username=current_user.username)
 
 @app.route("/advice")
