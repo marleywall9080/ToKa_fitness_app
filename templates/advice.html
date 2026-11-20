@@ -2,6 +2,17 @@
 
 {% block content %}
 <h1>Advice</h1>
+<form action="/filter" method="POST">
+    <label for="filter">filter</label>
+    <select id="filter" name="filter">
+        <option value="*">All</option>
+        <option value="diet">Diet</option>
+        <option value="weightloss">Weightloss</option>
+        <option value="cardio">Cardio</option>
+        <option value="strength">Strength</option>
+    </select>
+    <button type="submit">Filter</button>
+</form>
 <table border="1"> <!-- creates a table with the data from the called upon database and formats it so users can easily understand-->
     <tr>
         <th>Advice</th>

@@ -99,10 +99,29 @@ def advice():
     conn = sqlite3.connect("advice.db")
     cursor = conn.cursor()
     conn.row_factory = sqlite3.Row
-    cursor.execute("SELECT * FROM advice") # selects all the data in advice
+    cursor.execute("SELECT * FROM advice")
     records = cursor.fetchall() 
-    conn.close() # closes the database
-    return render_template("advice.html", records=records, font_size=font_size, username=current_user.username) # renders the html page and sends all the data to be shown
+    conn.close()
+    return render_template("advice.html", records=records, font_size=font_size, username=current_user.username)
+
+@app.route("/filter", methods=["POST", "GET"])
+@login_required
+def filter():
+    conn = sqlite3.connect("advice.db")
+    cursor = conn.cursor()
+    conn.row_factory = sqlite3.Row
+    if request.method == "POST":
+        filter = request.form.get("filter")
+        if filter == "*":
+            cursor.execute("SELECT * FROM advice")
+            records = cursor.fetchall() 
+            conn.close() # closes the database
+            return render_template("advice.html", records=records, font_size=font_size, username=current_user.username)
+        else:
+            cursor.execute("SELECT * FROM advice WHERE advice_type = ?", (filter,)) # selects all the data in advice where the advice type matches the filter
+            records = cursor.fetchall() 
+            conn.close() # closes the database
+            return render_template("advice.html", records=records, font_size=font_size, username=current_user.username)
 
 # posting advice page
 @app.route("/create_advice", methods=["GET", "POST"])
