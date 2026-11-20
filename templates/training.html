@@ -17,7 +17,10 @@
             <td>{{ record[4] }}</td>
             <td>
                 <form action="/delete" method="POST">
-                    <input type="hidden" value="record[0]" name="delete">
+                    <input type="hidden" value="{{ record[0] }}" name="delete">
+                    <input type="hidden" value="training" name="table">
+                    <input type="hidden" value="workout_id" name="id">
+                    <input type="hidden" value="training" name="url">
                     <button type="submit">delete</button>
                 </form>
             </td>

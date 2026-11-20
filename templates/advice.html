@@ -16,7 +16,10 @@
         {% if record[3] == username %}
         <td>
             <form action="/delete" method="POST">
-                <input type="hidden" value="record[0]" name="delete">
+                <input type="hidden" value="{{ record[0] }}" name="delete">
+                <input type="hidden" value="advice" name="table">
+                <input type="hidden" value="advice_id" name="id">
+                <input type="hidden" value="advice" name="url">
                 <button type="submit">delete</button>
             </form>
         </td>

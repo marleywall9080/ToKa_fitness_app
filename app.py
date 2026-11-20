@@ -209,6 +209,22 @@ def change_font():
         return render_template("settings.html", font_size=font_size, user=current_user.username)
     return render_template("settings.html")
 
+# delete function
+@app.route("/delete", methods=["POST", "GET"], endpoint="delete")
+@login_required
+def delete():
+    if request.method == "POST":
+        conn = sqlite3.connect("advice.db")
+        cursor = conn.cursor()
+        table = request.form.get("table")
+        id = request.form.get("id")
+        delete = request.form.get("delete")
+        url = request.form.get("url")
+
+        cursor.execute(f"DELETE FROM {table} WHERE {id} = ?", (delete,))
+        conn.commit()
+        return redirect(url_for(url))
+
 # start
 @app.route("/")
 def index(): # simple start page for people who aren't signed in
