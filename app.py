@@ -161,6 +161,38 @@ def videos():
     records = cursor.fetchall()
     return render_template("videos.html", records=records)
 
+# diet page
+@app.route("/diet")
+@login_required
+def diet():
+    calories = 0
+    conn = sqlite3.connect("advice.db")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM diets WHERE user=?",
+                   (current_user.username,))
+    records = cursor.fetchall()
+    for r in records:
+        calories += r[3]
+    return render_template("diet.html", records=records, calories=calories)
+
+# diet plan page
+@app.route("/diet_plan", methods=["POST", "GET"])
+@login_required
+def diet_plan():
+    if request.method == "POST":
+        conn = sqlite3.connect("advice.db")
+        cursor = conn.cursor()
+        food = request.form.get("food")
+        meal = request.form.get("meal")
+        calories = request.form.get("calories")
+
+        cursor.execute("INSERT INTO diets (food, meal, calories, user) VALUES (?, ?, ?, ?)",
+                    (food, meal, calories, current_user.username))
+        conn.commit()
+        return redirect(url_for("diet"))
+    return render_template("diet_plan.html")
+
 # settings page
 @app.route("/settings")
 @login_required

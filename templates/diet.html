@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Diet</h1>
+
+<table border="1">
+    <tr>
+        <th>Food</th>
+        <th>Meal</th>
+        <th>Calories</th>
+    </tr>
+    {% for record in records %}
+    <tr>
+        <td>{{ record [1] }}</td>
+        <td>{{ record [2] }}</td>
+        <td>{{ record [3] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<p>Total Calories: </p>
+<p>{{ calories }}</p>
+
+<p>Want to start planning your meals?</p>
+<a href="/diet_plan">Plan here</a>
+{% endblock %}
