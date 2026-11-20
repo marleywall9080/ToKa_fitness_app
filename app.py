@@ -102,7 +102,7 @@ def advice():
     cursor.execute("SELECT * FROM advice") # selects all the data in advice
     records = cursor.fetchall() 
     conn.close() # closes the database
-    return render_template("advice.html", records=records, font_size=font_size) # renders the html page and sends all the data to be shown
+    return render_template("advice.html", records=records, font_size=font_size, username=current_user.username) # renders the html page and sends all the data to be shown
 
 # posting advice page
 @app.route("/create_advice", methods=["GET", "POST"])

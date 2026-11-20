@@ -13,6 +13,14 @@
         <td>{{ record[1] }}</td>
         <td>{{ record[2] }}</td>
         <td>{{ record[3] }}</td>
+        {% if record[3] == username %}
+        <td>
+            <form action="/delete" method="POST">
+                <input type="hidden" value="record[0]" name="delete">
+                <button type="submit">delete</button>
+            </form>
+        </td>
+        {% endif %}
     </tr>
     {% endfor %}
 </table>
