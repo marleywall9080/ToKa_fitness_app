@@ -17,7 +17,7 @@
             <td>{{ record[4] }}</td>
             <td>
                 <form action="/delete" method="POST">
-                    <input type="hidden" value="{{ record[0] }}" name="delete">
+                    <input type="hidden" value="{{ record[0] }}" name="delete"> <!--sends required information -->
                     <input type="hidden" value="training" name="table">
                     <input type="hidden" value="workout_id" name="id">
                     <input type="hidden" value="training" name="url">
@@ -33,6 +33,6 @@
         <a href="/training_plan">Plan here</a>
         <br>
         Want to work with a personal trainer? <br>
-        <a href="/personal_trainer">Book a session now</a>
+        <a href="/personal_trainer">Book a session now</a> <!-- link to a basic html page since personal trainers aren't a required part of this digital solution-->
     </p>
 {% endblock %}

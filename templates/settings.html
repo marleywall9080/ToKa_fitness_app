@@ -2,12 +2,12 @@
 
 {% block content %}
 <h1>Settings</h1>
-{% if font_size == "small" or font_size == "large" %}
+{% if font_size == "small" or font_size == "large" %} <!-- text so that the user knows what the current text size is-->
     <p>the font size is: {{ font_size }}</p>
 {% else %}
     <p>the font size is: medium</p>
 {% endif %}
-<form action="/change_font" method="POST">
+<form action="/change_font" method="POST"> <!-- form to get users wanted font size-->
     <label for="font_size">Font size:</label>
     <select id="font_size" name="font_size">
         <option value="small">Small</option>

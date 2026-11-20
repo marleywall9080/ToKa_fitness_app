@@ -15,7 +15,7 @@
         <td>{{ record [2] }}</td>
         <td>{{ record [3] }}</td>
         <td>
-            <form action="/delete" method="POST">
+            <form action="/delete" method="POST"> <!-- makes it so the button follows the delete function-->
                 <input type="hidden" value="{{ record[0] }}" name="delete">
                 <input type="hidden" value="diets" name="table">
                 <input type="hidden" value="diet_id" name="id">

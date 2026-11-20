@@ -13,10 +13,10 @@
         <td>{{ record[1] }}</td>
         <td>{{ record[2] }}</td>
         <td>{{ record[3] }}</td>
-        {% if record[3] == username %}
+        {% if record[3] == username %} <!-- makes sure users can only delete their own pieces of advice-->
         <td>
-            <form action="/delete" method="POST">
-                <input type="hidden" value="{{ record[0] }}" name="delete">
+            <form action="/delete" method="POST"> <!-- makes the button go to the delete function-->
+                <input type="hidden" value="{{ record[0] }}" name="delete"> <!-- sends all the required information-->
                 <input type="hidden" value="advice" name="table">
                 <input type="hidden" value="advice_id" name="id">
                 <input type="hidden" value="advice" name="url">

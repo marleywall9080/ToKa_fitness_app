@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        {% if font_size == "small" %}
-            <link rel="stylesheet" href="static/small_style.css"> <!-- link to the css style sheet-->
+        {% if font_size == "small" %} <!-- checking which style sheet it should be pulling from-->
+            <link rel="stylesheet" href="static/small_style.css"> <!-- link to the css style sheet, multiple style sheets for different font sizes-->
         {% elif font_size == "large" %}
             <link rel="stylesheet" href="static/large_style.css">
-        {% else %}
+        {% else %} <!-- default so if nothing else is called medium will be-->
             <link rel="stylesheet" href="static/medium_style.css">
         {% endif %}
         <meta charset="UTF-8">

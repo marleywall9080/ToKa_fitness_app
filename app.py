@@ -167,15 +167,15 @@ def videos():
 @app.route("/diet")
 @login_required
 def diet():
-    calories = 0
+    calories = 0 # intializes the calories variable
     conn = sqlite3.connect("advice.db")
     cursor = conn.cursor()
 
     cursor.execute("SELECT * FROM diets WHERE user=?",
-                   (current_user.username,))
+                   (current_user.username,)) # gets all items in the table where the username is the same as the currently logged in user
     records = cursor.fetchall()
     for r in records:
-        calories += r[3]
+        calories += r[3] # counts up all the users calories
     return render_template("diet.html", records=records, calories=calories, font_size=font_size)
 
 # diet plan page
@@ -201,13 +201,13 @@ def diet_plan():
 def settings(): # very barebones at the time of writing this comment, will add more later
     return render_template("settings.html", font_size=font_size, user=current_user.username)
 
+# font size function
 @app.route("/change_font", methods=["POST", "GET"], endpoint="change_font")
 def change_font():
     if request.method == "POST":
-        global font_size
+        global font_size # makes the variable font_size global
         font_size = request.form.get("font_size")
-        return render_template("settings.html", font_size=font_size, user=current_user.username)
-    return render_template("settings.html")
+        return render_template("settings.html", font_size=font_size, user=current_user.username) # added "font_size=font_size" to every return statement so that it can be used to change the font size on every page
 
 # delete function
 @app.route("/delete", methods=["POST", "GET"], endpoint="delete")
@@ -216,14 +216,14 @@ def delete():
     if request.method == "POST":
         conn = sqlite3.connect("advice.db")
         cursor = conn.cursor()
-        table = request.form.get("table")
+        table = request.form.get("table") # gets all required data to remove an item from a table
         id = request.form.get("id")
         delete = request.form.get("delete")
         url = request.form.get("url")
 
-        cursor.execute(f"DELETE FROM {table} WHERE {id} = ?", (delete,))
+        cursor.execute(f"DELETE FROM {table} WHERE {id} = ?", (delete,)) # deletes the item from the table
         conn.commit()
-        return redirect(url_for(url))
+        return redirect(url_for(url)) # redirects to the page that the user was already on
 
 # start
 @app.route("/")
