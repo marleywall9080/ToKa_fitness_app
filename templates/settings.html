@@ -2,5 +2,21 @@
 
 {% block content %}
 <h1>Settings</h1>
+{% if font_size == "small" or font_size == "large" %}
+    <p>the font size is: {{ font_size }}</p>
+{% else %}
+    <p>the font size is: medium</p>
+{% endif %}
+<form action="/change_font" method="POST">
+    <label for="font_size">Font size:</label>
+    <select id="font_size" name="font_size">
+        <option value="small">Small</option>
+        <option value="medium">Medium</option>
+        <option value="large">Large</option>
+    </select><br>
+    <button type="submit">submit</button>
+</form>
+<br>
+<p>Username: {{ user }}</p>
 <a href="/logout">Logout</a> <!-- link to the logout function-->
 {% endblock %}

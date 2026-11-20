@@ -1,0 +1,46 @@
+* {
+    box-sizing: border-box;
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif
+}
+
+body{
+    background-color: lightgreen;
+    margin: 0;
+    text-align: center;
+}
+
+table{
+    margin: 0 auto;
+}
+
+tr:nth-child(odd){
+    background-color: rgb(99, 160, 99);
+}
+
+.header{
+    background-color: teal;
+    display: flex;
+    padding: 10px;
+    justify-content: space-between;
+}
+
+.header a{
+    float: left;
+    color: black;
+    padding: 12px;
+    line-height: 25px;
+    border-radius: 4px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+}
+
+.header a:hover{
+    background-color: darkslategray;
+}
+
+.header a.logo{
+    font-size: 25px;
+    font-weight: bold;
+}

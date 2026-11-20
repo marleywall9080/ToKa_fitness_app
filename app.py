@@ -6,6 +6,8 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 
+font_size = "medium"
+
 #Start of code from geek for geeks, comments may be scarce and not fully correct
 
 app = Flask(__name__) # intialising flask and setting up the requirements for sqlalchemy and login
@@ -88,7 +90,7 @@ def home():
     conn.row_factory = sqlite3.Row
     cursor.execute("SELECT  * FROM advice ORDER BY RANDOM() LIMIT 1") # code from geek for geeks, randomly scrambles the order of data in the database and then takes the first one
     records = cursor.fetchall() # sets up a variable with all the selected data in it
-    return render_template("home.html", username=current_user.username, records = records) # renders the html page and sends the selected data
+    return render_template("home.html", username=current_user.username, records = records, font_size=font_size) # renders the html page and sends the selected data
 
 # advice page
 @app.route("/advice")
@@ -100,7 +102,7 @@ def advice():
     cursor.execute("SELECT * FROM advice") # selects all the data in advice
     records = cursor.fetchall() 
     conn.close() # closes the database
-    return render_template("advice.html", records=records) # renders the html page and sends all the data to be shown
+    return render_template("advice.html", records=records, font_size=font_size) # renders the html page and sends all the data to be shown
 
 # posting advice page
 @app.route("/create_advice", methods=["GET", "POST"])
@@ -116,7 +118,7 @@ def create_advice():
         conn.commit()
         conn.close()
         return redirect(url_for("advice")) # takes user to the advice page
-    return render_template("create_advice.html") # renders the html page
+    return render_template("create_advice.html", font_size=font_size) # renders the html page
 
 # training page
 @app.route("/training")
@@ -127,7 +129,7 @@ def training():
     cursor.execute("SELECT * FROM training WHERE user=?",
                    (current_user.username,)) # only takes the data from the database where the recorded username is the same as the one currently logged in so people don't see other peoples workout plans
     records = cursor.fetchall()
-    return render_template("training.html", records=records)
+    return render_template("training.html", records=records, font_size=font_size)
 
 # creating a training plan page
 @app.route("/training_plan", methods=["GET", "POST"])
@@ -144,7 +146,7 @@ def training_plan():
         cursor.execute("INSERT INTO training (exercise, workout_type, sets, reps, user) VALUES (?, ?, ?, ?, ?)", (exercise, workout_type, sets, reps, current_user.username)) # records the username of the person currently logged in so that it can filter out other peoples workout plans later
         conn.commit()
         return redirect(url_for("training"))
-    return render_template("training_plan.html")
+    return render_template("training_plan.html", font_size=font_size)
 
 @app.route("/personal_trainer")
 def personal_trainer():
@@ -159,7 +161,7 @@ def videos():
 
     cursor.execute("SELECT * FROM videos") # selects all data from the videos table
     records = cursor.fetchall()
-    return render_template("videos.html", records=records)
+    return render_template("videos.html", records=records, font_size=font_size)
 
 # diet page
 @app.route("/diet")
@@ -174,7 +176,7 @@ def diet():
     records = cursor.fetchall()
     for r in records:
         calories += r[3]
-    return render_template("diet.html", records=records, calories=calories)
+    return render_template("diet.html", records=records, calories=calories, font_size=font_size)
 
 # diet plan page
 @app.route("/diet_plan", methods=["POST", "GET"])
@@ -191,12 +193,20 @@ def diet_plan():
                     (food, meal, calories, current_user.username))
         conn.commit()
         return redirect(url_for("diet"))
-    return render_template("diet_plan.html")
+    return render_template("diet_plan.html", font_size=font_size)
 
 # settings page
-@app.route("/settings")
+@app.route("/settings", methods=["POST", "GET"])
 @login_required
 def settings(): # very barebones at the time of writing this comment, will add more later
+    return render_template("settings.html", font_size=font_size, user=current_user.username)
+
+@app.route("/change_font", methods=["POST", "GET"], endpoint="change_font")
+def change_font():
+    if request.method == "POST":
+        global font_size
+        font_size = request.form.get("font_size")
+        return render_template("settings.html", font_size=font_size, user=current_user.username)
     return render_template("settings.html")
 
 # start
