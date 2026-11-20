@@ -11,11 +11,11 @@ body{
 
 table{
     margin: 0 auto;
-    font-size: large;
+    font-size: x-large;
 }
 
 p{
-    font-size: large;
+    font-size: x-large;
 }
 
 h1{
@@ -23,7 +23,19 @@ h1{
 }
 
 a{
-    font-size: large;
+    font-size: x-large;
+}
+
+button{
+    font-size: x-large;
+}
+
+form{
+    font-size: x-large;
+}
+
+option{
+    font-size: x-large;
 }
 
 tr:nth-child(odd){
@@ -56,4 +68,12 @@ tr:nth-child(odd){
 .header a.logo{
     font-size: 30px;
     font-weight: bold;
+}
+
+.footer{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: grey;
 }
