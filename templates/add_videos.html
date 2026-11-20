@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Add Videos</h1>
+<p>This requires the embed link for a youtube video, <br>
+    which can be gained from going on the desired youtube video, clicking share, click embed, and copying specifically the link part of the code</p>
+<form action="/add_videos" method="POST">
+    <label for="video_link">Video Link</label>
+    <input type="text" name="video_link"><br>
+    <label for="type">Video advice type type</label>
+    <input type="text" name="type"><br>
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}

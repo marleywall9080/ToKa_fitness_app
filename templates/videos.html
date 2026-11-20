@@ -14,8 +14,23 @@
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> <!-- you can find embed code directly on youtube-->
         </td>
         <td>{{ record[2] }}</td>
+        {% if user == "admin" %}
+        <td>
+            <form action="/delete" method="POST"> <!-- makes the button go to the delete function-->
+                <input type="hidden" value="{{ record[0] }}" name="delete"> <!-- sends all the required information-->
+                <input type="hidden" value="videos" name="table">
+                <input type="hidden" value="video_id" name="id">
+                <input type="hidden" value="videos" name="url">
+                <button type="submit">delete</button>
+            </form>
+        </td>
+        {% endif %}
     </tr>
     {% endfor %}
 </table>
+{% if user == "admin" %}
+    <p>Want to add more videos?</p>
+    <a href="/add_videos">Click here</a>
+{% endif %}
 <p>the videos here are for place holder reasons</p>
 {% endblock %}

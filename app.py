@@ -124,12 +124,19 @@ def create_advice():
 @app.route("/training")
 @login_required
 def training():
-    conn = sqlite3.connect("advice.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM training WHERE user=?",
-                   (current_user.username,)) # only takes the data from the database where the recorded username is the same as the one currently logged in so people don't see other peoples workout plans
-    records = cursor.fetchall()
-    return render_template("training.html", records=records, font_size=font_size)
+    if current_user.username == "admin":
+        conn = sqlite3.connect("advice.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM training") # special version so admin can see all
+        records = cursor.fetchall()
+        return render_template("training.html", records=records, font_size=font_size)
+    else:
+        conn = sqlite3.connect("advice.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM training WHERE user=?",
+                    (current_user.username,)) # only takes the data from the database where the recorded username is the same as the one currently logged in so people don't see other peoples workout plans
+        records = cursor.fetchall()
+        return render_template("training.html", records=records, font_size=font_size)
 
 # creating a training plan page
 @app.route("/training_plan", methods=["GET", "POST"])
@@ -161,22 +168,50 @@ def videos():
 
     cursor.execute("SELECT * FROM videos") # selects all data from the videos table
     records = cursor.fetchall()
-    return render_template("videos.html", records=records, font_size=font_size)
+    return render_template("videos.html", records=records, font_size=font_size, user=current_user.username)
+
+# add videos page
+@app.route("/add_videos", methods=["POST", "GET"])
+@login_required
+def add_videos():
+    if request.method == "POST":
+        conn = sqlite3.connect("advice.db")
+        cursor = conn.cursor()
+
+        video_link = request.form.get("video_link")
+        type = request.form.get("type")
+
+        cursor.execute("INSERT INTO videos (video_link, advice_type) VALUES (?, ?)", (video_link, type))
+        conn.commit()
+        return redirect(url_for("videos"))
+    return render_template("add_videos.html", font_size=font_size)
 
 # diet page
 @app.route("/diet")
 @login_required
 def diet():
-    calories = 0 # intializes the calories variable
-    conn = sqlite3.connect("advice.db")
-    cursor = conn.cursor()
+    if current_user.username == "admin":
+        calories = 0 # intializes the calories variable
+        conn = sqlite3.connect("advice.db")
+        cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM diets WHERE user=?",
-                   (current_user.username,)) # gets all items in the table where the username is the same as the currently logged in user
-    records = cursor.fetchall()
-    for r in records:
-        calories += r[3] # counts up all the users calories
-    return render_template("diet.html", records=records, calories=calories, font_size=font_size)
+        cursor.execute("SELECT * FROM diets")
+        records = cursor.fetchall()
+        for r in records:
+            calories += r[3] # counts up all the users calories
+        return render_template("diet.html", records=records, calories=calories, font_size=font_size)
+    
+    else:
+        calories = 0 # intializes the calories variable
+        conn = sqlite3.connect("advice.db")
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM diets WHERE user=?",
+                    (current_user.username,)) # gets all items in the table where the username is the same as the currently logged in user
+        records = cursor.fetchall()
+        for r in records:
+            calories += r[3] # counts up all the users calories
+        return render_template("diet.html", records=records, calories=calories, font_size=font_size, user=current_user.username)
 
 # diet plan page
 @app.route("/diet_plan", methods=["POST", "GET"])
