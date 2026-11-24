@@ -44,6 +44,8 @@ def register():
 
         if Users.query.filter_by(username=username).first(): # checks if it is already taken
             return render_template("sign_up.html", error="Username already taken!")
+        elif username == "DROP TABLE" or username == "1=1": # code by me to stop some simple sql injection methods i could think of
+            return render_template("sign_up.html", error="Username is not valid")
 
         hashed_password = generate_password_hash(password, method="pbkdf2:sha256") # encrypts the password
 
@@ -141,19 +143,12 @@ def create_advice():
 @app.route("/training")
 @login_required
 def training():
-    if current_user.username == "admin":
-        conn = sqlite3.connect("advice.db")
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM training") # special version so admin can see all
-        records = cursor.fetchall()
-        return render_template("training.html", records=records, font_size=font_size)
-    else:
-        conn = sqlite3.connect("advice.db")
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM training WHERE user=?",
-                    (current_user.username,)) # only takes the data from the database where the recorded username is the same as the one currently logged in so people don't see other peoples workout plans
-        records = cursor.fetchall()
-        return render_template("training.html", records=records, font_size=font_size)
+    conn = sqlite3.connect("advice.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM training WHERE user=?",
+                (current_user.username,)) # only takes the data from the database where the recorded username is the same as the one currently logged in so people don't see other peoples workout plans
+    records = cursor.fetchall()
+    return render_template("training.html", records=records, font_size=font_size)
 
 # creating a training plan page
 @app.route("/training_plan", methods=["GET", "POST"])
@@ -191,8 +186,8 @@ def videos():
 @app.route("/add_videos", methods=["POST", "GET"])
 @login_required
 def add_videos():
-    if current_user.username == "admin":
-        if request.method == "POST":
+    if current_user.username == "admin": # checks if the current logged in user is called admin
+        if request.method == "POST": # if so page works like normal
             conn = sqlite3.connect("advice.db")
             cursor = conn.cursor()
 
@@ -204,24 +199,12 @@ def add_videos():
             return redirect(url_for("videos"))
         return render_template("add_videos.html", font_size=font_size)
     else:
-        return redirect(url_for("home"))
+        return redirect(url_for("home")) # if not they are returned to the home page
 
 # diet page
 @app.route("/diet")
 @login_required
 def diet():
-    if current_user.username == "admin":
-        calories = 0 # intializes the calories variable
-        conn = sqlite3.connect("advice.db")
-        cursor = conn.cursor()
-
-        cursor.execute("SELECT * FROM diets")
-        records = cursor.fetchall()
-        for r in records:
-            calories += r[3] # counts up all the users calories
-        return render_template("diet.html", records=records, calories=calories, font_size=font_size)
-    
-    else:
         calories = 0 # intializes the calories variable
         conn = sqlite3.connect("advice.db")
         cursor = conn.cursor()
