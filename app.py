@@ -96,14 +96,15 @@ def home():
 @app.route("/advice")
 @login_required
 def advice():
-    conn = sqlite3.connect("advice.db")
+    conn = sqlite3.connect("advice.db") # connects to the database
     cursor = conn.cursor()
     conn.row_factory = sqlite3.Row
-    cursor.execute("SELECT * FROM advice")
-    records = cursor.fetchall() 
+    cursor.execute("SELECT * FROM advice") # selects all items from advice
+    records = cursor.fetchall()  # puts all the items from advice into a list
     conn.close()
-    return render_template("advice.html", records=records, font_size=font_size, username=current_user.username)
+    return render_template("advice.html", records=records, font_size=font_size, username=current_user.username) # renders the html page with the required data
 
+# filter system
 @app.route("/filter", methods=["POST", "GET"])
 @login_required
 def filter():
@@ -112,16 +113,13 @@ def filter():
     conn.row_factory = sqlite3.Row
     if request.method == "POST":
         filter = request.form.get("filter")
-        if filter == "*":
-            cursor.execute("SELECT * FROM advice")
-            records = cursor.fetchall() 
-            conn.close() # closes the database
-            return render_template("advice.html", records=records, font_size=font_size, username=current_user.username)
-        else:
+        if filter == "*": # this is if the user selects all
+            return redirect(url_for("advice")) # directly redirects to standard advice page since that already shows all
+        else: # this is for what else the user could input, since the filter selection is from a dropdown menu there is only predetermined options which line up with options from adding the advice
             cursor.execute("SELECT * FROM advice WHERE advice_type = ?", (filter,)) # selects all the data in advice where the advice type matches the filter
             records = cursor.fetchall() 
             conn.close() # closes the database
-            return render_template("advice.html", records=records, font_size=font_size, username=current_user.username)
+            return render_template("advice.html", records=records, font_size=font_size, username=current_user.username) # renders the advice page with the new data from the table
 
 # posting advice page
 @app.route("/create_advice", methods=["GET", "POST"])
@@ -224,7 +222,6 @@ def diet():
         calories = 0 # intializes the calories variable
         conn = sqlite3.connect("advice.db")
         cursor = conn.cursor()
-
         cursor.execute("SELECT * FROM diets WHERE user=?",
                     (current_user.username,)) # gets all items in the table where the username is the same as the currently logged in user
         records = cursor.fetchall()
