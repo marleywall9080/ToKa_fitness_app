@@ -266,7 +266,7 @@ def change_font():
 @login_required
 def tier():
     if request.method == "POST":
-        if current_user.username == "admin":
+        if current_user.username == "admin": # stops admins from downgrading
             return "You can't downgrade as an admin"
         global tier
         if tier == "premium":
