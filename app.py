@@ -191,17 +191,20 @@ def videos():
 @app.route("/add_videos", methods=["POST", "GET"])
 @login_required
 def add_videos():
-    if request.method == "POST":
-        conn = sqlite3.connect("advice.db")
-        cursor = conn.cursor()
+    if current_user.username == "admin":
+        if request.method == "POST":
+            conn = sqlite3.connect("advice.db")
+            cursor = conn.cursor()
 
-        video_link = request.form.get("video_link")
-        type = request.form.get("type")
+            video_link = request.form.get("video_link")
+            type = request.form.get("type")
 
-        cursor.execute("INSERT INTO videos (video_link, advice_type) VALUES (?, ?)", (video_link, type))
-        conn.commit()
-        return redirect(url_for("videos"))
-    return render_template("add_videos.html", font_size=font_size)
+            cursor.execute("INSERT INTO videos (video_link, advice_type) VALUES (?, ?)", (video_link, type))
+            conn.commit()
+            return redirect(url_for("videos"))
+        return render_template("add_videos.html", font_size=font_size)
+    else:
+        return redirect(url_for("home"))
 
 # diet page
 @app.route("/diet")
