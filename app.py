@@ -83,10 +83,15 @@ def logout():
 
 # end of code from geek for geeks
 
+tier = "standard"
+
 # home page
 @app.route("/home")
 @login_required
 def home():
+    global tier
+    if current_user.username == "admin":
+        tier = "premium"
     conn = sqlite3.connect("advice.db") # connects to the database
     cursor = conn.cursor()
     conn.row_factory = sqlite3.Row
@@ -237,8 +242,8 @@ def diet_plan():
 # settings page
 @app.route("/settings", methods=["POST", "GET"])
 @login_required
-def settings(): # very barebones at the time of writing this comment, will add more later
-    return render_template("settings.html", font_size=font_size, user=current_user.username)
+def settings():
+    return render_template("settings.html", font_size=font_size, user=current_user.username, tier=tier)
 
 # font size function
 @app.route("/change_font", methods=["POST", "GET"], endpoint="change_font")
@@ -247,6 +252,21 @@ def change_font():
         global font_size # makes the variable font_size global
         font_size = request.form.get("font_size")
         return render_template("settings.html", font_size=font_size, user=current_user.username) # added "font_size=font_size" to every return statement so that it can be used to change the font size on every page
+
+# tiers function
+@app.route("/tier", methods=["POST", "GET"], endpoint="tier")
+@login_required
+def tier():
+    if request.method == "POST":
+        if current_user.username == "admin":
+            return "You can't downgrade as an admin"
+        global tier
+        if tier == "premium":
+            tier = "standard"
+            return render_template("downgrade.html", font_size=font_size)
+        else:
+            tier = "premium"
+            return render_template("upgrade.html", font_size=font_size)
 
 # delete function
 @app.route("/delete", methods=["POST", "GET"], endpoint="delete")

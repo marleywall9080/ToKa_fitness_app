@@ -19,5 +19,16 @@
 <br>
 <h1>Account</h1>
 <p>Username: {{ user }}</p>
+{% if tier == "premium" %} <!-- code for the tier system to check which tier the user is and display the correct output-->
+<p>Tier: premium</p>
+<form action="/tier" method="POST">
+    <button>Go back to standard</button>
+</form>
+{% else %}
+<p>Tier: standard</p>
+<form action="/tier" method="POST">
+    <button>upgrade to premium</button>
+</form>
+{% endif %}
 <a href="/logout">Logout</a> <!-- link to the logout function-->
 {% endblock %}
