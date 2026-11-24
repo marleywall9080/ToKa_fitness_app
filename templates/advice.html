@@ -38,6 +38,8 @@
     </tr>
     {% endfor %}
 </table>
+{% if tier == "premium" %}
 <p>Want to post advice?</p>
 <a href="/create_advice">Click here</a> <!-- link to the post advice page-->
+{% endif %}
 {% endblock %}

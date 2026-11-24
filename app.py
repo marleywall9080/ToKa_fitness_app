@@ -111,7 +111,7 @@ def advice():
     cursor.execute("SELECT * FROM advice") # selects all items from advice
     records = cursor.fetchall()  # puts all the items from advice into a list
     conn.close()
-    return render_template("advice.html", records=records, font_size=font_size, username=current_user.username) # renders the html page with the required data
+    return render_template("advice.html", records=records, font_size=font_size, username=current_user.username, tier=tier) # renders the html page with the required data
 
 # filter system
 @app.route("/filter", methods=["POST", "GET"])
@@ -128,23 +128,26 @@ def filter():
             cursor.execute("SELECT * FROM advice WHERE advice_type = ?", (filter,)) # selects all the data in advice where the advice type matches the filter
             records = cursor.fetchall() 
             conn.close() # closes the database
-            return render_template("advice.html", records=records, font_size=font_size, username=current_user.username) # renders the advice page with the new data from the table
+            return render_template("advice.html", records=records, font_size=font_size, username=current_user.username, tier=tier) # renders the advice page with the new data from the table
 
 # posting advice page
 @app.route("/create_advice", methods=["GET", "POST"])
 @login_required
 def create_advice():
-    if request.method == "POST":
-        conn = sqlite3.connect("advice.db")
-        cursor = conn.cursor()
-        advice = request.form.get("advice") # gets the advice from a form on the html page
-        advice_type = request.form.get("type")
+    if tier != "premium":
+        return redirect(url_for("advice"))
+    else:
+        if request.method == "POST":
+            conn = sqlite3.connect("advice.db")
+            cursor = conn.cursor()
+            advice = request.form.get("advice") # gets the advice from a form on the html page
+            advice_type = request.form.get("type")
 
-        cursor.execute("INSERT INTO advice (advice, advice_type, user) VALUES (?, ?, ?)", (advice, advice_type, current_user.username)) # puts the data into the database
-        conn.commit()
-        conn.close()
-        return redirect(url_for("advice")) # takes user to the advice page
-    return render_template("create_advice.html", font_size=font_size) # renders the html page
+            cursor.execute("INSERT INTO advice (advice, advice_type, user) VALUES (?, ?, ?)", (advice, advice_type, current_user.username)) # puts the data into the database
+            conn.commit()
+            conn.close()
+            return redirect(url_for("advice")) # takes user to the advice page
+        return render_template("create_advice.html", font_size=font_size) # renders the html page
 
 # training page
 @app.route("/training")
