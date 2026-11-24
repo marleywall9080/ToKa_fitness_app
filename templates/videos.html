@@ -6,6 +6,7 @@
     <tr>
         <th>Video</th>
         <th>Type</th>
+        <th>Tier</th>
     </tr>
     {% for record in records %}
     <tr>
@@ -14,6 +15,7 @@
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> <!-- you can find embed code directly on youtube-->
         </td>
         <td>{{ record[2] }}</td>
+        <td>{{ record[3] }}</td>
         {% if user == "admin" %}
         <td>
             <form action="/delete" method="POST"> <!-- makes the button go to the delete function-->

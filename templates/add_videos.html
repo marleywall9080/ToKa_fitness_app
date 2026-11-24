@@ -5,10 +5,15 @@
 <p>This requires the embed link for a youtube video, <br>
     which can be gained from going on the desired youtube video, clicking share, click embed, and copying specifically the link part of the code</p>
 <form action="/add_videos" method="POST">
-    <label for="video_link">Video Link</label>
+    <label for="video_link">Video Link:</label>
     <input type="text" name="video_link" required><br>
-    <label for="type">Video advice type</label>
+    <label for="type">Video advice type:</label>
     <input type="text" name="type" required><br>
+    <label for="tier">What tier is the video:</label>
+    <select id="tier" name="tier">
+        <option value="standard">Standard</option>
+        <option value="premium">Premium</option>
+    </select>
     <button type="submit">Submit</button>
 </form>
 {% endblock %}

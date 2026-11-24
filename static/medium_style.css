@@ -46,7 +46,9 @@ tr:nth-child(odd){
 }
 
 .footer{
-    position: fixed;
+    position: sticky;
+    margin-top: 580px;
+    padding: 15px;
     left: 0;
     bottom: 0;
     width: 100%;

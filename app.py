@@ -97,7 +97,7 @@ def home():
     conn.row_factory = sqlite3.Row
     cursor.execute("SELECT  * FROM advice ORDER BY RANDOM() LIMIT 1") # code from geek for geeks, randomly scrambles the order of data in the database and then takes the first one
     records = cursor.fetchall() # sets up a variable with all the selected data in it
-    cursor.execute("SELECT * FROM videos ORDER BY RANDOM() LIMIT 1")
+    cursor.execute("SELECT * FROM videos WHERE tier = ? ORDER BY RANDOM() LIMIT 1", ("standard",))
     videos = cursor.fetchall()
     return render_template("home.html", username=current_user.username, records = records, videos=videos, font_size=font_size) # renders the html page and sends the selected data
 
@@ -184,10 +184,14 @@ def personal_trainer():
 def videos():
     conn = sqlite3.connect("advice.db")
     cursor = conn.cursor()
-
-    cursor.execute("SELECT * FROM videos") # selects all data from the videos table
-    records = cursor.fetchall()
-    return render_template("videos.html", records=records, font_size=font_size, user=current_user.username)
+    if tier == "premium":
+        cursor.execute("SELECT * FROM videos") # selects all data from the videos table
+        records = cursor.fetchall()
+        return render_template("videos.html", records=records, font_size=font_size, user=current_user.username)
+    else:
+        cursor.execute("SELECT * FROM videos WHERE tier = ?", ("standard",)) # selects all data from the videos table
+        records = cursor.fetchall()
+        return render_template("videos.html", records=records, font_size=font_size, user=current_user.username)
 
 # add videos page
 @app.route("/add_videos", methods=["POST", "GET"])
@@ -200,8 +204,9 @@ def add_videos():
 
             video_link = request.form.get("video_link")
             type = request.form.get("type")
+            tier = request.form.get("tier")
 
-            cursor.execute("INSERT INTO videos (video_link, advice_type) VALUES (?, ?)", (video_link, type))
+            cursor.execute("INSERT INTO videos (video_link, advice_type, tier) VALUES (?, ?, ?)", (video_link, type, tier))
             conn.commit()
             return redirect(url_for("videos"))
         return render_template("add_videos.html", font_size=font_size)
