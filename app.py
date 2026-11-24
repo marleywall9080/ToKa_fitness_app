@@ -92,7 +92,9 @@ def home():
     conn.row_factory = sqlite3.Row
     cursor.execute("SELECT  * FROM advice ORDER BY RANDOM() LIMIT 1") # code from geek for geeks, randomly scrambles the order of data in the database and then takes the first one
     records = cursor.fetchall() # sets up a variable with all the selected data in it
-    return render_template("home.html", username=current_user.username, records = records, font_size=font_size) # renders the html page and sends the selected data
+    cursor.execute("SELECT * FROM videos ORDER BY RANDOM() LIMIT 1")
+    videos = cursor.fetchall()
+    return render_template("home.html", username=current_user.username, records = records, videos=videos, font_size=font_size) # renders the html page and sends the selected data
 
 # advice page
 @app.route("/advice")

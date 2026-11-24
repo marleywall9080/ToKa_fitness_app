@@ -11,4 +11,16 @@
     <button onclick="window.location.href='/advice'">see more advice</button> <!-- button to the advice page-->
 </p>
 {% endfor %}
+<br>
+<p> </p>
+<br>
+{% for video in videos %}
+<p>
+    Random video:
+    <iframe width="391" height="220" src="{{ video[1] }}" title="YouTube video player" frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    a {{ video[2] }} video
+
+</p>
+{% endfor %}
 {% endblock %}
