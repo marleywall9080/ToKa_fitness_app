@@ -4,7 +4,7 @@
 <h1>Welcome {{ username }}</h1>
 {% for record in records %} 
 <p>
-    Random advice:
+    Random advice: <br>
     {{ record[1] }} <br> <!-- takes the data from the database and prints the second column which in this situation is the advice itself-->
     {{ record[2 ]}} advice by {{ record[3] }} <br>
     see more advice here <br>
@@ -16,10 +16,13 @@
 <br>
 {% for video in videos %}
 <p>
-    Random video:
+    Random video: <br>
     <iframe width="391" height="220" src="{{ video[1] }}" title="YouTube video player" frameborder="0" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-    a {{ video[2] }} video
+    <br>
+    a {{ video[2] }} video <br>
+    see more videos here <br>
+    <button onclick="window.location.href='/videos'">See more videos</button> <!-- button to the videos page-->
 
 </p>
 {% endfor %}
