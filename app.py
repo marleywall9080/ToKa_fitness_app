@@ -63,6 +63,8 @@ def login():
     if request.method == "POST": # gets the users username and password
         username = request.form.get("username")
         password = request.form.get("password")
+        global tier
+        tier = "standard"
 
         user = Users.query.filter_by(username=username).first() # checks if the username exists in the database
 
@@ -110,8 +112,12 @@ def advice():
     conn.row_factory = sqlite3.Row
     cursor.execute("SELECT * FROM advice") # selects all items from advice
     records = cursor.fetchall()  # puts all the items from advice into a list
+    cursor.execute(
+    "SELECT advice_id FROM likes WHERE user = ?",
+    (current_user.username,))
+    liked_advice_ids = {row[0] for row in cursor.fetchall()} # checks which posts the user has liked
     conn.close()
-    return render_template("advice.html", records=records, font_size=font_size, username=current_user.username, tier=tier) # renders the html page with the required data
+    return render_template("advice.html", records=records, font_size=font_size, username=current_user.username, tier=tier, liked_advice_ids=liked_advice_ids) # renders the html page with the required data
 
 # filter system
 @app.route("/filter", methods=["POST", "GET"])
@@ -129,6 +135,49 @@ def filter():
             records = cursor.fetchall() 
             conn.close() # closes the database
             return render_template("advice.html", records=records, font_size=font_size, username=current_user.username, tier=tier) # renders the advice page with the new data from the table
+
+# likes system, coded with help from duck.ai
+@app.route("/likes", methods=["POST"])
+@login_required
+def likes():
+    advice_id = request.form.get("advice_id")
+    if not advice_id:
+        return "Missing advice_id", 400
+    user = current_user.username
+    conn = sqlite3.connect("advice.db")
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT 1 FROM likes WHERE user = ? AND advice_id = ?",
+            (user, advice_id),) # selects a piece of advice that the user has liked
+        already_liked = cursor.fetchone() is not None
+        if already_liked:
+            cursor.execute(
+                "DELETE FROM likes WHERE user = ? AND advice_id = ?",
+                (user, advice_id),) # deletes likes from lists
+        else:
+            cursor.execute(
+                "INSERT INTO likes (user, advice_id) VALUES (?, ?)",
+                (user, advice_id),) # adds likes to list
+
+        cursor.execute(
+            """
+            UPDATE advice
+            SET likes = (
+                SELECT COUNT(*)
+                FROM likes
+                WHERE likes.advice_id = advice.advice_id
+            )
+            WHERE advice_id = ?
+            """,
+            (advice_id,),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+    return redirect(url_for("advice"))
+
+
 
 # posting advice page
 @app.route("/create_advice", methods=["GET", "POST"])

@@ -18,12 +18,25 @@
         <th>Advice</th>
         <th>Type</th>
         <th>User</th>
+        <th>Likes</th>
     </tr>
     {% for record in records %}
     <tr>
         <td>{{ record[1] }}</td>
         <td>{{ record[2] }}</td>
         <td>{{ record[3] }}</td>
+        <td>{{ record[4] }}</td>
+        <td>
+        <form action="{{ url_for('likes') }}" method="POST">
+            <input type="hidden" name="advice_id" value="{{ record[0] }}">
+
+            {% if record[0] in liked_advice_ids %}
+                <button type="submit">Unlike</button>
+            {% else %}
+                <button type="submit">Like</button>
+            {% endif %}
+        </form>
+        </td>
         {% if record[3] == username or username == "admin" %} <!-- makes sure users or staff can only delete their own pieces of advice-->
         <td>
             <form action="/delete" method="POST"> <!-- makes the button go to the delete function-->
