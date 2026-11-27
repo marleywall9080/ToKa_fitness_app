@@ -6,7 +6,7 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 
-font_size = "medium"
+font_size = "medium" # creating a default font size
 
 #Start of code from geek for geeks, comments may be scarce and not fully correct
 
@@ -85,21 +85,21 @@ def logout():
 
 # end of code from geek for geeks
 
-tier = "standard"
+tier = "standard" # creating default tier
 
 # home page
 @app.route("/home")
 @login_required
 def home():
     global tier
-    if current_user.username == "admin":
+    if current_user.username == "admin": # if the username is admin tier is automatically set to premium
         tier = "premium"
     conn = sqlite3.connect("advice.db") # connects to the database
     cursor = conn.cursor()
     conn.row_factory = sqlite3.Row
     cursor.execute("SELECT  * FROM advice ORDER BY RANDOM() LIMIT 1") # code from geek for geeks, randomly scrambles the order of data in the database and then takes the first one
     records = cursor.fetchall() # sets up a variable with all the selected data in it
-    cursor.execute("SELECT * FROM videos WHERE tier = ? ORDER BY RANDOM() LIMIT 1", ("standard",))
+    cursor.execute("SELECT * FROM videos WHERE tier = ? ORDER BY RANDOM() LIMIT 1", ("standard",)) # selects a random video
     videos = cursor.fetchall()
     return render_template("home.html", username=current_user.username, records = records, videos=videos, font_size=font_size) # renders the html page and sends the selected data
 
@@ -142,9 +142,9 @@ def filter():
 def likes():
     advice_id = request.form.get("advice_id")
     if not advice_id:
-        return "Missing advice_id", 400
+        return "Missing advice_id", 400 # incase not advice_id is found so that the system doesn't break
     user = current_user.username
-    conn = sqlite3.connect("advice.db")
+    conn = sqlite3.connect("advice.db") 
     try:
         cursor = conn.cursor()
         cursor.execute("SELECT 1 FROM likes WHERE user = ? AND advice_id = ?",
@@ -169,7 +169,7 @@ def likes():
             )
             WHERE advice_id = ?
             """,
-            (advice_id,),
+            (advice_id,), # updates the likes count on the advice table
         )
         conn.commit()
     finally:
@@ -184,7 +184,7 @@ def likes():
 @login_required
 def create_advice():
     if tier != "premium":
-        return redirect(url_for("advice"))
+        return redirect(url_for("advice")) # makes it so only premium users can post advice
     else:
         if request.method == "POST":
             conn = sqlite3.connect("advice.db")
@@ -216,13 +216,13 @@ def training_plan():
     if request.method == "POST":
         conn = sqlite3.connect("advice.db")
         cursor = conn.cursor()
-        exercise = request.form.get("exercise")
+        exercise = request.form.get("exercise") # takes user inputs from the web page
         workout_type = request.form.get("type")
         sets = request.form.get("sets")
         reps = request.form.get("reps")
 
         cursor.execute("INSERT INTO training (exercise, workout_type, sets, reps, user) VALUES (?, ?, ?, ?, ?)", (exercise, workout_type, sets, reps, current_user.username)) # records the username of the person currently logged in so that it can filter out other peoples workout plans later
-        conn.commit()
+        conn.commit() # inserts it into the training table
         return redirect(url_for("training"))
     return render_template("training_plan.html", font_size=font_size)
 
@@ -241,7 +241,7 @@ def videos():
         records = cursor.fetchall()
         return render_template("videos.html", records=records, font_size=font_size, user=current_user.username)
     else:
-        cursor.execute("SELECT * FROM videos WHERE tier = ?", ("standard",)) # selects all data from the videos table
+        cursor.execute("SELECT * FROM videos WHERE tier = ?", ("standard",)) # selects data from the videos table where the tier is set to standard
         records = cursor.fetchall()
         return render_template("videos.html", records=records, font_size=font_size, user=current_user.username)
 
@@ -291,7 +291,7 @@ def diet_plan():
         calories = request.form.get("calories")
 
         cursor.execute("INSERT INTO diets (food, meal, calories, user) VALUES (?, ?, ?, ?)",
-                    (food, meal, calories, current_user.username))
+                    (food, meal, calories, current_user.username)) # takes the username as well so that one user can't see another users diet plan
         conn.commit()
         return redirect(url_for("diet"))
     return render_template("diet_plan.html", font_size=font_size)
